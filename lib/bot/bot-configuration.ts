@@ -158,7 +158,9 @@ class Sticker {
         "CAACAgUAAxkBAAEbUEBjpqvyaq5hWfsrDQh0DZSIutW0HQACZw4AAsZRxhXHmG4ay8fjmCwE",
         "CAACAgUAAxkBAAEbUFZjpqvyrIRAJ9NHdd96eYc9ryQVzAACWBUAAtgqVg2lDzeo-ZbPzSwE",
         "CAACAgUAAxkBAAEbUFdjpqvyt6f4pSZ6vRlxTv7MVYl1-QACZBUAAtgqVg35PVwa3pRDuywE",
-        "CAACAgUAAxkBAAEbUHdjpqvyGwJhjiJ3gLgsbNsmwMfJ0gACZgADxlHGFWdiI-4mWFEFLAQ"
+        "CAACAgUAAxkBAAEbUHdjpqvyGwJhjiJ3gLgsbNsmwMfJ0gACZgADxlHGFWdiI-4mWFEFLAQ",
+        "CAACAgIAAxkBAAEbXxFjqVwO5h621jb_ZJGA2YOweBsj3QAChwIAAu0gPgY8dExHPfFmTSwE",
+        "CAACAgIAAxkBAAEbXw9jqVwAAnhnlJlkPud1Ywier6RbLwAChgIAAu0gPgY3nlUkz-JZDiwE"
     ];
 
     static getRandomSticker() {
