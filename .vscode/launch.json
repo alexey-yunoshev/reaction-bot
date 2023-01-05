@@ -16,13 +16,13 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Bot",
+            "name": "Sticker Saver Bot",
             "runtimeArgs": [
                 "-r",
                 "ts-node/register"
             ],
             "args": [
-                "${relativeFile}"
+                "${workspaceFolder}/bin/sticker-saver-bot.ts"
             ],
             "envFile": "${workspaceFolder}/.env.local"
         }
