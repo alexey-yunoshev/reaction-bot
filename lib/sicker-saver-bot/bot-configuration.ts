@@ -1,7 +1,7 @@
 import { resolve } from "path";
 import { Telegraf } from "telegraf";
 import { Message } from "telegraf/typings/core/types/typegram";
-import { Status, StickerService } from "./stickersServices";
+import { SaveStickerResult, Status, StickerService } from "./stickersServices";
 import { UNASSIGNED_COLLECTION_ID } from "./types";
 import { saveUrlToFile } from "./utils";
 
@@ -49,7 +49,13 @@ export class StickerSaverBotConfiguration {
         });
     }
 
-    private async saveSticker(sticker: Message.StickerMessage['sticker']) {
+    private async saveSticker(sticker: Message.StickerMessage['sticker']): Promise<SaveStickerResult> {
+        if (sticker.is_video) {
+            return {
+                status: Status.Err,
+                reason: 'Ignored the sticker because it is a video',
+            }
+        }
         const setName = sticker.set_name || '';
         const fileUniqueId = sticker.file_unique_id;
         const fileId = sticker.file_id;
@@ -59,18 +65,18 @@ export class StickerSaverBotConfiguration {
             setName,
             fileUniqueId,
         });
-        await this.downloadSticker(sticker.file_id);
+        await this.downloadSticker(sticker.file_id, sticker.is_animated);
         return result;
     }
 
-    private async downloadSticker(file_id: string) {
+    private async downloadSticker(file_id: string, isAnimated: boolean) {
         const file = await this.bot.telegram.getFile(file_id);
         const stickerFilePath = file.file_path;
         if (!stickerFilePath) {
             throw new Error(`file_path for ${file.file_unique_id} is undefined`);
         }
         const downloadLink = this.buildDownloadLink(stickerFilePath);
-        const filePath = this.buildStickerFilePath(file.file_unique_id);
+        const filePath = this.buildStickerFilePath(file.file_unique_id, isAnimated);
         await saveUrlToFile(downloadLink, filePath);
     }
 
@@ -78,7 +84,7 @@ export class StickerSaverBotConfiguration {
         return `https://api.telegram.org/file/bot${this.token}/${filePath}`;
     }
 
-    private buildStickerFilePath(fileUniqueId: string): string {
-        return resolve(this.stickerIndexService.stickersDirectoryPath, 'files', `${fileUniqueId}.tgs`);
+    private buildStickerFilePath(fileUniqueId: string, isAnimated: boolean): string {
+        return resolve(this.stickerIndexService.stickersDirectoryPath, 'files', `${fileUniqueId}.${isAnimated ? 'tgs' : 'webp'}`);
     }
 }

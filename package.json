@@ -10,7 +10,10 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "convert-stickers": "docker run --rm -v $(pwd)/data/files:/source edasriyan/tgs-to-webp"
+    "convert-stickers": "docker run --rm -v $(pwd)/data/files:/source edasriyan/tgs-to-webp",
+    "normalize-extensions": "for f in $(pwd)/data/files/*.tgs.webp; do mv -- \"$f\" \"${f%.tgs.webp}.webp\"; done",
+    "move-stickers": "cp $(pwd)/data/files/*.webp ./lib/ui/public",
+    "prepare-stickers": "npm run convert-stickers && npm run normalize-extensions && npm run move-stickers"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
