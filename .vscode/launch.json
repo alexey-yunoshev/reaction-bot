@@ -25,6 +25,15 @@
                 "${workspaceFolder}/bin/sticker-saver-bot.ts"
             ],
             "envFile": "${workspaceFolder}/.env.local"
+        },
+        {
+            "name": "Current TS File",
+            "type": "node",
+            "request": "launch",
+            "args": ["${relativeFile}"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
         }
     ]
 }

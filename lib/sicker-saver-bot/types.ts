@@ -1,4 +1,4 @@
-export const collections = {
+export const hashtagCollectionMap: Record<string, string> = {
     'сделалдело': '1',
     'радость': '1',
     'боль': '2',

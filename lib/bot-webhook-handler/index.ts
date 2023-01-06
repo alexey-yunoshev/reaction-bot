@@ -1,6 +1,11 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { Telegraf } from 'telegraf';
+import { stickerCollections } from '../../data/stickerCollections';
 import { BotConfiguration } from '../bot/bot-configuration';
+import { StickerMaskRepository } from '../bot/stickerMaskRepository';
+import { StickerMaskService } from '../bot/stickerMaskService';
+import { StickerService } from '../bot/stickerService';
 
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
@@ -19,8 +24,27 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
         };
     }
 
+    const dataTableName = process.env.DATA_TABLE_NAME;
+    if (!dataTableName) {
+        throw new Error(`process.env.DATA_TABLE_NAME is undefined`);
+    }
+
+    const dynamodb = new DynamoDBClient({});
+    const stickerMaskRepository = new StickerMaskRepository({
+        dataTableName,
+        dynamodb
+    });
+    const stickerMaskService = new StickerMaskService({
+        stickerCollections,
+        stickerMaskRepository,
+    })
+    const stickerService = new StickerService({
+        stickerCollections,
+        stickerMaskService,
+    });
     const botConfig = new BotConfiguration({
         bot,
+        stickerService
     })
 
     try {
