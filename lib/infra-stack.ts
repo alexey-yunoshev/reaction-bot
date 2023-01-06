@@ -1,4 +1,4 @@
-import { aws_lambda as lambda, aws_logs as logs, Stack, StackProps } from 'aws-cdk-lib';
+import { aws_dynamodb as dynamodb, aws_lambda as lambda, aws_logs as logs, Stack, StackProps } from 'aws-cdk-lib';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import * as path from 'path';
@@ -10,10 +10,12 @@ export interface InfraStackProps extends StackProps {
 
 export class InfraStack extends Stack {
   private config;
+  private dataTable: dynamodb.Table;
   constructor(scope: Construct, id: string, props: InfraStackProps) {
     super(scope, id, props);
 
     this.config = props.config;
+    this.createDataTable();
     this.createBotWebhookHandler();
   }
 
@@ -25,11 +27,21 @@ export class InfraStack extends Stack {
       environment: {
         BOT_TOKEN: this.config.botToken,
         BOT_WEBHOOK_SECRET_TOKEN: this.config.botWebhookSecretToken,
+        DATA_TABLE_NAME: this.dataTable.tableName,
       }
     });
 
+    this.dataTable.grantReadWriteData(webhookHandler);
+
     webhookHandler.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
+    });
+  }
+
+  private createDataTable() {
+    this.dataTable = new dynamodb.Table(this, 'DataTable', {
+      partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
     });
   }
 }
