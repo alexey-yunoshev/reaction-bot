@@ -1,6 +1,7 @@
 export const hashtagCollectionMap: Record<string, string> = {
     'сделалдело': '1',
     'радость': '1',
+    'удовольствие': '1',
     'боль': '2',
     'пиздец': '3',
 }
